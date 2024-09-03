@@ -72,8 +72,8 @@ buenasAcciones(hermione,50).
 esBuenAlumno(Alumno):-
 acciones(Alumno,Acciones),
 buenasAcciones(Alumno,_),
-forall((member(Accio_:-n,Acciones)),not(malasAcciones(Accion))).
-accionEsRecurrente(AccionRecurrente):-
+forall((member(Accion,Acciones)),not(malasAcciones(Accion))).
+%accionEsRecurrente(AccionRecurrente):-
 %*******************MIT2017************************
 
 herramientasRequeridas(ordenarCuarto, [aspiradora(100), trapeador, plumero]).
@@ -99,7 +99,7 @@ tiene(Persona,varitaDeNeutrones),
 herramientasRequeridas(Tarea,_).
 
 puedeRealizarTarea(Persona,Tarea):-
-    herramientasRequeridas(_,Tools),
+    herramientasRequeridas(Tarea,Tools),
     tiene(Persona,_),
     forall((member(Tool,Tools)),integranteSatisfase(Persona,Tool)).
 %4
@@ -241,11 +241,22 @@ tieneMasEncargosQueCualquiera(UnChabon,ElotroChabon):-
     
 %6
 personajesRespetables(PersonajesRespetables):-
-    personaje(PersonajeMuestra,_),
-    findall(PersonajeRespetable,esRespetable(PersonajeMuestra),PersonajesRespetables).
-esRespetable(Person):-
+    https://github.com/ramaacabrera/pdep-practica-parciales.git
+    findall(PersonajeMuestra,(respetable(PersonajeMuestra,ValorDeRespeto),ValorDeRespeto>9),PersonajesRespetables).
+respetable(Person,Valor):-
+    personaje(Person,actriz(Peliculas)),
+    length(Peliculas,Cantidad),
+    Valor is Cantidad//10.
+respetable(Person,10):-
+    personaje(Person,mafioso(resuelveProblemas)).
+respetable(Person,1):-
+    personaje(Person,mafioso(maton)).
+respetable(Person,20):-
+    personaje(Person,mafioso(capo)).
 
     
+    
+   
 
 
 
