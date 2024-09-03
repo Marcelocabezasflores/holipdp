@@ -241,7 +241,7 @@ tieneMasEncargosQueCualquiera(UnChabon,ElotroChabon):-
     
 %6
 personajesRespetables(PersonajesRespetables):-
-    https://github.com/ramaacabrera/pdep-practica-parciales.git
+    
     findall(PersonajeMuestra,(respetable(PersonajeMuestra,ValorDeRespeto),ValorDeRespeto>9),PersonajesRespetables).
 respetable(Person,Valor):-
     personaje(Person,actriz(Peliculas)),
@@ -253,6 +253,26 @@ respetable(Person,1):-
     personaje(Person,mafioso(maton)).
 respetable(Person,20):-
     personaje(Person,mafioso(capo)).
+%7
+hartoDe(Personaje,PersonajeInsoportable):-
+    encargo(_, Personaje, _),
+    personaje(PersonajeInsoportable, _),
+    forall((encargo(_,Personaje,Tareas),Personaje\=PersonajeInsoportable),tieneQuevercon(Tareas,PersonajeInsoportable)).
+
+tieneQuevercon(cuidar(Personajeins),Personajeins).
+    
+tieneQuevercon(buscar(Personajeins,_),Personajeins).
+    
+tieneQuevercon(ayudar(Personajeins),Personajeins).
+    
+tieneQuevercon(cuidar(AmigoDAmigo),Amigo):-
+    amigo(Amigo,AmigoDAmigo).
+tieneQuevercon(buscar(AmigoDAmigo,_),Amigo):-
+    amigo(Amigo,AmigoDAmigo).
+tieneQuevercon(ayudar(AmigoDAmigo),Amigo):-
+    amigo(Amigo,AmigoDAmigo).
+
+
 
     
     
