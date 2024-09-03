@@ -142,7 +142,108 @@ tareaEsCompleja(TareaCompleja):-
     length(HerramientasNecesarias, CantidadDeHerramientas),
     CantidadDeHerramientas>=2.
     
+%******************************************************************************PULP***************************************
+personaje(pumkin,     ladron([licorerias, estacionesDeServicio])).
+personaje(honeyBunny, ladron([licorerias, estacionesDeServicio])).
+personaje(vincent,    mafioso(maton)).
+personaje(jules,      mafioso(maton)).
+personaje(marsellus,  mafioso(capo)).
+personaje(winston,    mafioso(resuelveProblemas)).
+personaje(mia,        actriz([foxForceFive])).
+personaje(butch,      boxeador).
+
+pareja(marsellus, mia).
+pareja(pumkin,    honeyBunny).
+
+%trabajaPara(Empleador, Empleado)
+trabajaPara(marsellus, vincent).
+trabajaPara(marsellus, jules).
+trabajaPara(marsellus, winston).
+%1
+
+esPeligroso(Personaje):-
+    personaje(Personaje,Actividad),
+    actividadPeligrosa(Actividad).
+esPeligroso(Personaje):-
+    personaje(Personaje,_),
+    tieneEmpleadosPeligrosos(Personaje).
+actividadPeligrosa(ladron(Tareas)):-
+    member(licorerias,Tareas).
+actividadPeligrosa(mafioso(maton)).
+tieneEmpleadosPeligrosos(Personaje):-
+    trabajaPara(Personaje,Empleado),
+    esPeligroso(Empleado).
+%2
+amigo(vincent, jules).
+amigo(jules, jimmie).
+amigo(vincent, elVendedor).
+
+duoTemible(Amigo1,Amigo2):-
+    personaje(Amigo1,_),
+    personaje(Amigo2,_),
+    sonPeligrosos(Amigo1,Amigo2),
+    sonAmigosOsonPareja(Amigo1,Amigo2).
+sonPeligrosos(Amigo1,Amigo2):-
+    esPeligroso(Amigo1),
+    esPeligroso(Amigo2).
+sonAmigosOsonPareja(Amigo1,Amigo2):-
+    amigo(Amigo1,Amigo2).
+sonAmigosOsonPareja(Amigo1,Amigo2):-
+    pareja(Amigo2,Amigo1).
+%3
+%encargo(Solicitante, Encargado, Tarea). 
+%las tareas pueden ser cuidar(Protegido), ayudar(Ayudado), buscar(Buscado, Lugar)
+encargo(marsellus, vincent,   cuidar(mia)).
+encargo(vincent,  elVendedor, cuidar(mia)).
+encargo(marsellus, winston, ayudar(jules)).
+encargo(marsellus, winston, ayudar(vincent)).
+encargo(marsellus, vincent, buscar(butch, losAngeles)).
+
+
+
+estaEnProblemas(Personaje):-
+    trabajaPara(Jefe,Personaje),
+    esPeligroso(Jefe),
+    pareja(Jefe,Pareja),
+    encargo(Jefe,Personaje,cuidar(Pareja)).
+estaEnProblemas(Personaje):-
+    personaje(Personaje,_),
+    encargo(_,Personaje,buscar(_,boxeador)).
+estaEnProblemas(butch).
+%4
+sanCayetano(Alguien):-
+    personaje(Alguien,_),
+    forall(todosLosQueTieneCerca(Alguien,Cercano),lesDaTrabajo(Alguien,Cercano)).
+todosLosQueTieneCerca(Alguien,Cercano):-
+    %personaje(Alguien,_),
+    %personaje(Cercano,_),
+    amigo(Alguien,Cercano).
+todosLosQueTieneCerca(Alguien,Cercano):-
+    %personaje(Cercano,_),
+    %personaje(Alguien,_),
+    trabajaPara(Cercano,Alguien).
+lesDaTrabajo(Alguien,Cercano):-
+    encargo(Alguien,Cercano,_).
+%5
+
+
+
+masAtareado(Atareado):-
+    personaje(Otropersonaje,_),
+    personaje(Atareado,_),
+    forall(personaje(Otropersonaje,_),Otropersonaje\=Atareado),tieneMasEncargosQueCualquiera(Atareado,Otropersonaje).
+tieneMasEncargosQueCualquiera(UnChabon,ElotroChabon):-
+    findall(TareaDelUnChabon, encargo(_,UnChabon,TareaDelUnChabon), TareasUnChabon),
+    findall(TareaDelOtroChabon,encargo(_,ElotroChabon,TareaDelOtroChabon),TareasOtroChabon),
+    length(TareasUnChabon, Int),
+    length(TareasOtroChabon,Int2),
+    Int>Int2.   
+    
 %6
+personajesRespetables(PersonajesRespetables):-
+    personaje(PersonajeMuestra,_),
+    findall(PersonajeRespetable,esRespetable(PersonajeMuestra),PersonajesRespetables).
+esRespetable(Person):-
 
     
 
