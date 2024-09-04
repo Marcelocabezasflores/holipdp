@@ -469,7 +469,7 @@ puntosDeUnAgente(Agente,Puntos):-
 %El polimorfismo nos sirve para no cambiar el predicado principal del predicado 
 %al cual estamos usando el concepto, es decir  se puede agregar varias formas
 %de tareas o tipos de tareas y todas sus variantes sin necesidad de cambiar el 
-%predicado "tareas".Solo alcanza con agregar las nuevas definiciones para el nuevo requerimiento.
+%predicado que lo contiene.Solo alcanza con agregar las nuevas definiciones para el nuevo requerimiento.
 % solo agregarias nueva deficion de tareas pero los predicados que usan tareas 
 %NO se modifican.
 %INVERSIBILIDAD:nos sirve para que un predicado pueda no solo dar respuestas 
