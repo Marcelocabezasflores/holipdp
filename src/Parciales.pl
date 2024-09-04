@@ -276,15 +276,179 @@ caracteristicas(vincent,  [negro, muchoPelo, tieneCabeza]).
 caracteristicas(jules,    [tieneCabeza, muchoPelo]).
 caracteristicas(marvin,   [negro]).
 
-% Relaciona a dos personajes si uno tiene al menos una característica que el otro no
+
 duoDiferenciable(Integrante1, Integrante2) :-
-    sonAmigosOPareja(Integrante1, Integrante2),
+    sonAmigosOsonPareja(Integrante1, Integrante2),
     caracteristicas(Integrante1, Caracteristicas1),
     caracteristicas(Integrante2, Caracteristicas2),
     member(Caracteristica, Caracteristicas1),
     not(member(Caracteristica, Caracteristicas2)).
 
+%************************Festivales de Rock***************************
+anioActual(2015).
+%festival(nombre, lugar, bandas, precioBase).
+%lugar(nombre, capacidad).
+festival(lulapaluza, lugar(hipodromo,40000), [miranda, paulMasCarne, muse], 500).
+festival(mostrosDelRock, lugar(granRex, 10000), [kiss, judasPriest, blackSabbath], 1000).
+festival(personalFest, lugar(geba, 5000), [tanBionica, miranda, muse, pharrellWilliams], 300).
+festival(cosquinRock, lugar(aerodromo, 2500), [erucaSativa, laRenga], 400).
 
+%banda(nombre, año, nacionalidad, popularidad).
+
+banda(paulMasCarne,1960, uk, 70).
+banda(muse,1994, uk, 45).
+banda(kiss,1973, us, 63).
+banda(erucaSativa,2007, ar, 60).
+banda(judasPriest,1969, uk, 91).
+banda(tanBionica,2012, ar, 71).
+banda(miranda,2001, ar, 38).
+banda(laRenga,1988, ar, 70).
+banda(blackSabbath,1968, uk, 96).
+banda(pharrellWilliams,2014, us, 85).
+%entradasVendidas(nombreDelFestival, tipoDeEntrada, cantidadVendida).
+% tipos de entrada: campo, plateaNumerada(numero de fila), plateaGeneral(zona).
+entradasVendidas(lulapaluza,campo, 600).
+entradasVendidas(lulapaluza,plateaGeneral(zona1), 200).
+entradasVendidas(lulapaluza,plateaGeneral(zona2), 300).
+entradasVendidas(mostrosDelRock,campo,20000).
+entradasVendidas(mostrosDelRock,plateaNumerada(1),40).
+entradasVendidas(mostrosDelRock,plateaNumerada(2),0).
+
+% … y asi para todas las filas
+
+entradasVendidas(mostrosDelRock,plateaNumerada(10),25).
+entradasVendidas(mostrosDelRock,plateaGeneral(zona1),300).
+entradasVendidas(mostrosDelRock,plateaGeneral(zona2),500).
+
+plusZona(hipodromo, zona1, 55).
+plusZona(hipodromo, zona2, 20).
+plusZona(granRex, zona1, 45).
+plusZona(granRex, zona2, 30).
+plusZona(aerodromo, zona1, 25).
+
+
+%11)  estaDeModa/1. Se cumple para las bandas recientes (que surgieron en
+% los últimos 5 años) que tienen una popularidad mayor a 70.
+estaDeModa(Banda) :-
+    banda(Banda, Anio, _, Popularidad),
+    esReciente(Anio),
+    esPopular(Popularidad).
+esReciente(Anio) :-
+    anioActual(AnioActual),
+    AnioPiso is AnioActual - 5,
+    between(AnioPiso, AnioActual, Anio).
+esPopular(Popularidad) :-
+    Popularidad > 70.
+%2
+esCareta(Festival) :-
+    festival(Festival, _, Bandas, _),
+    bandasDeModa(Bandas).
+esCareta(Festival):-
+    festival(Festival, _, Bandas, _),
+    member(miranda,Bandas).
+%esCareta(Festival):-
+%    festival(Festival, _, Bandas, _),
+ %   not(entradasRazonables(Festival)).
+
+bandasDeModa(Bandas) :-
+    member(Banda1, Bandas),
+    estaDeModa(Banda1),
+    member(Banda2, Bandas),
+    estaDeModa(Banda2),
+    Banda1 \= Banda2.
+
+%3
+%entradasRazonables(Festival,EntradaDeEseFest):-
+ %   festival(_,_,_,PrecioBase),
+  %  plusZona(Festival,Zona,PrecioPlus),
+   % entradasVendidas(Festival,plateaGeneral(Zona),_).
+%5
+recaudacion(Festival, Recaudacion):-
+    festival(Festival, _, _, _),
+    findall(PrecioxTipo, precioPorFest(Festival, PrecioxTipo), ListaDeGananciasPorFest),
+    sum_list(ListaDeGananciasPorFest, Recaudacion).
+
+precioPorFest(Festival, PrecioxTipo):-
+    festival(Festival, lugar(Lugar, _), _, PrecioBase),
+    entradasVendidas(Festival, plateaGeneral(Zona), Cantidad),
+    plusZona(Lugar, Zona, Plus),
+    P is PrecioBase + Plus,
+    PrecioxTipo is Cantidad * P.
+
+precioPorFest(Festival, PrecioxTipo):-
+    festival(Festival, _, _, PrecioBase),
+    entradasVendidas(Festival, plateaNumerada(Nfila), Cantidad),
+    K is (PrecioBase + 200 )// Nfila,
+    PrecioxTipo is Cantidad * K.
+
+precioPorFest(Festival, PrecioxTipo):-
+    festival(Festival, _, _, PrecioBase),
+    entradasVendidas(Festival, campo, Cantidad),
+    PrecioxTipo is Cantidad * PrecioBase.
+
+%***************Vigilantes*************
+
+ %tarea(agente, tarea, ubicacion)
+%tareas:
+%  ingerir(descripcion, tamaño, cantidad)
+%  apresar(malviviente, recompensa)
+%  asuntosInternos(agenteInvestigado)
+%  vigilar(listaDeNegocios)
+
+tarea(vigilanteDelBarrio, ingerir(pizza, 1.5, 2),laBoca).
+tarea(vigilanteDelBarrio, vigilar([pizzeria, heladeria]), barracas).
+tarea(canaBoton, asuntosInternos(vigilanteDelBarrio), barracas).
+tarea(sargentoGarcia, vigilar([pulperia, haciendaDeLaVega, plaza]),puebloDeLosAngeles).
+tarea(sargentoGarcia, ingerir(vino, 0.5, 5),puebloDeLosAngeles).
+tarea(sargentoGarcia, apresar(elzorro, 100), puebloDeLosAngeles). 
+tarea(vega, apresar(neneCarrizo,50),avellaneda).
+tarea(jefeSupremo, vigilar([congreso,casaRosada,tribunales]),laBoca).
+
+
+ubicacion(puebloDeLosAngeles).
+ubicacion(avellaneda).
+ubicacion(barracas).
+ubicacion(marDelPlata).
+ubicacion(laBoca).
+ubicacion(uqbar).
+
+
+%jefe(jefe, subordinado)
+jefe(jefeSupremo,vega ).
+jefe(vega, vigilanteDelBarrio).
+jefe(vega, canaBoton).
+jefe(jefeSupremo,sargentoGarcia).
+   
+%1
+frecuenta(Agente,Ubicacion):-
+    tarea(Agente,_,Ubicacion).
+frecuenta(Agente,buenosAires):-
+    tarea(Agente,_,_).
+frecuenta(vega,quilmes).
+frecuenta(Agente,marDelPlata):-
+    tarea(Agente,vigilar(Lugares),_),
+    member(negocioDeAlfajores,Lugares).
+%2
+lugarInaccesible(Lugar):-
+    ubicacion(Lugar),
+    forall(tarea(Agente,_,Lugar),esInaccesible(Agente,Lugar)).
+esInaccesible(Agente,Lugar):-
+    not(frecuenta(Agente,Lugar)).
+%3
+afincado(Agente):-
+    tarea(Agente,_,Ubicacion1),
+    forall((tarea(Agente,_,Ubicacion),Ubicacion\=Ubicacion1),Ubicacion=Ubicacion1).
+
+%4
+cadenaDeMando([_]).
+cadenaDeMando([PrimerAgente,SegundoAgente|Agentes]):-
+
+    jefe(PrimerAgente,SegundoAgente),
+    cadenaDeMando([SegundoAgente|Agentes]).
+
+    
+
+    
 
 
 
