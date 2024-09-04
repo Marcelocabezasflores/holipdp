@@ -271,6 +271,20 @@ tieneQuevercon(buscar(AmigoDAmigo,_),Amigo):-
     amigo(Amigo,AmigoDAmigo).
 tieneQuevercon(ayudar(AmigoDAmigo),Amigo):-
     amigo(Amigo,AmigoDAmigo).
+%8
+caracteristicas(vincent,  [negro, muchoPelo, tieneCabeza]).
+caracteristicas(jules,    [tieneCabeza, muchoPelo]).
+caracteristicas(marvin,   [negro]).
+
+% Relaciona a dos personajes si uno tiene al menos una característica que el otro no
+duoDiferenciable(Integrante1, Integrante2) :-
+    sonAmigosOPareja(Integrante1, Integrante2),
+    caracteristicas(Integrante1, Caracteristicas1),
+    caracteristicas(Integrante2, Caracteristicas2),
+    member(Caracteristica, Caracteristicas1),
+    not(member(Caracteristica, Caracteristicas2)).
+
+
 
 
 
