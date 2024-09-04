@@ -446,7 +446,38 @@ cadenaDeMando([PrimerAgente,SegundoAgente|Agentes]):-
     jefe(PrimerAgente,SegundoAgente),
     cadenaDeMando([SegundoAgente|Agentes]).
 
+%5
+agentePremio(Agente):-
+    puntosDeUnAgente(Agente,PuntosAgente),
+    forall((puntosDeUnAgente(OtroAgente,PuntosOtroAgente),OtroAgente \= Agente), PuntosAgente>PuntosOtroAgente).
+puntosDeUnAgente(Agente,Puntos):-
+    tarea(Agente,vigilar(Lugares),_),
+    length(Lugares,CantidadDeNegoscios),
+    Puntos is 5*CantidadDeNegoscios.
+puntosDeUnAgente(Agente,Puntos):-
+    tarea(Agente,ingerir(_,Tam,Cant),_),
+    Unidades is  Tam*Cant,
+    Puntos is -10*Unidades.
+puntosDeUnAgente(Agente,Puntos):-
+    tarea(Agente,apresar(_,Recompensa),_),
+    Puntos is Recompensa//2.
+puntosDeUnAgente(Agente,Puntos):-
+    tarea(Agente,asuntosInternos(Vigilado),_),
+    puntosDeUnAgente(Vigilado,PuntosVigilado),
+    Puntos is 2*PuntosVigilado.
+%6
+%El polimorfismo nos sirve para no cambiar el predicado principal del predicado 
+%al cual estamos usando el concepto, es decir  se puede agregar varias formas
+%de tareas o tipos de tareas y todas sus variantes sin necesidad de cambiar el 
+%predicado "tareas".Solo alcanza con agregar las nuevas definiciones para el nuevo requerimiento.
+% solo agregarias nueva deficion de tareas pero los predicados que usan tareas 
+%NO se modifican.
+%INVERSIBILIDAD:nos sirve para que un predicado pueda no solo dar respuestas 
+%de exisitencia que dan true o false sino nos permite saber los casos para los
+%cuales es verdadero o falso.
+
     
+
 
     
 
